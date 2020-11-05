@@ -2,25 +2,21 @@ const fs = require('fs');
 
 // import text file
 let text = fs.readFileSync('./files.txt', 'utf-8'); 
+// let text2 = fs.readFileSync('./files2.txt', 'utf-8'); 
 
 //split text file to array and remove all Unnecessary characters
-let arr = text.split(/\[|\]|,|: |\|Time|\|File Count|\r?\n|\r/g);
-
-// remove empty elements
-let filterdArr = arr.filter((el) => {
-  return el != "" && el !== " ";
-})
+let arr = text.match(/(?<=File Count: |Time: |Value: )[\d:.]*/g);
 
 //decler array for file data objects
 let fileDataArr = [];
 
 //populate file data array with objects in this form:
 // { time: <miliseconds>, fileCount: <number> }
-filterdArr.forEach((el, i) => {
+arr.forEach((el, i) => {
   if (i % 2 === 0) {
     fileDataArr.push({
       time: getMiliseconds(el),
-      fileCount: +filterdArr[i + 1],
+      fileCount: +arr[i + 1],
     })
   }
 });
@@ -50,13 +46,13 @@ timePeriodsArr.forEach((timeObj, i) => {
   let counter = 0;
 
   // check for each file data object if fits the current time period and calculate the average
-  fileDataArr.forEach((fileObj, x) => {
+  fileDataArr.forEach((fileObj) => {
     if (fileObj.time >= startMs && fileObj.time < endMs) {
       timeObj.fileCountAvg += fileObj.fileCount;
       counter++;
     }
   })
-  timeObj.fileCountAvg = Math.round(timeObj.fileCountAvg / counter);
+  timeObj.fileCountAvg = timeObj.fileCountAvg / counter;
 });
 
 // time to miliseconds function
@@ -70,4 +66,5 @@ function getMiliseconds(el) {
 }
 
 console.log(timePeriodsArr);
+
 
