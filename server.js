@@ -2,7 +2,7 @@ const fs = require('fs');
 
 // import text file
 let text = fs.readFileSync('./files.txt', 'utf-8'); 
-// let text2 = fs.readFileSync('./files2.txt', 'utf-8'); 
+let text2 = fs.readFileSync('./files2.txt', 'utf-8'); 
 
 //split text file to array and remove all Unnecessary characters
 let arr = text.match(/(?<=File Count: |Time: |Value: )[\d:.]*/g);
