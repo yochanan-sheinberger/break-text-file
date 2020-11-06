@@ -26,23 +26,25 @@ let timePeriodsArr = [];
 
 // populate time eriods array with objects for each time period
 for (let i = 0; i < 24; i++) {
-  let hours = i < 10 ? '0' + i : i;
-  for (let x = 0; x < 60; x += 15) {
-    let mins = x === 0 ? '00' : x;
+  for (let x = 15; x <= 60; x += 15) {
+    let mins = x % 60 === 0 ? '00' : x;
+    let hours = mins === '00' ? i + 1 : i;
+    hours = hours < 10 ? '0' + hours : hours;
     timePeriodsArr.push({
       timePeriod: `${hours}:${mins}`,
       fileCountAvg: 0,
     })
   }
 }
+// console.log(timePeriodsArr);
 
 // get array length
 let arrLng = timePeriodsArr.length - 1;
 
-// for each time period get start and end time in miliseconds
+//for each time period get start and end time in miliseconds
 timePeriodsArr.forEach((timeObj, i) => {
-  let startMs = getMiliseconds(timeObj.timePeriod)
-  let endMs = i + 1 < arrLng ? getMiliseconds(timePeriodsArr[i + 1].timePeriod) : 86400000;
+  let startMs = i > 0 ? getMiliseconds(timePeriodsArr[i - 1].timePeriod) : 0;
+  let endMs = getMiliseconds(timeObj.timePeriod);
   let counter = 0;
 
   // check for each file data object if fits the current time period and calculate the average
